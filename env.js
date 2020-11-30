@@ -1,42 +1,48 @@
 // const peerPath = `/dns4/localhost/tcp/4003/ws/p2p`;
-// const peerId = "QmTJHMJzwD5je8tu6YgfJ9tBK6Aac9zqvCoimsLvtibnry";
+// const peerId = 'QmVD8LC6vjAHaDgsLySc86BVbnb256LuRZqsWtK5toABsc';
 // const env = {
-//   entry: "./src/index.eth.orbitdb.js",
-//   officialRemote: "eth",
+//   entry: './src/index.eth.http.js',
+//   officialRemote: 'eth',
+//   http: {
+//     host: 'http://localhost:3100/uprtcl/1',
+//   },
 //   pinner: {
-//     url: "http://localhost:3100",
+//     url: 'http://localhost:3200',
 //     Swarm: [],
 //     Bootstrap: [`${peerPath}/${peerId}`],
 //     peerMultiaddr: `${peerPath}/${peerId}`,
 //   },
 //   ethers: {
 //     apiKeys: {
-//       etherscan: "6H4I43M46DJ4IJ9KKR8SFF1MF2TMUQTS2F",
-//       infura: "73e0929fc849451dae4662585aea9a7b",
+//       etherscan: '6H4I43M46DJ4IJ9KKR8SFF1MF2TMUQTS2F',
+//       infura: '73e0929fc849451dae4662585aea9a7b',
 //     },
-//     provider: "",
-//     // provider: 'https://xdai.poanetwork.dev'
+//     // provider: "",
+//     provider: 'https://xdai.poanetwork.dev',
 //   },
 // };
 
 const peerPath = `/dns4/pinner.intercreativity.io/tcp/4003/wss/p2p`;
-const peerId = "QmVD8LC6vjAHaDgsLySc86BVbnb256LuRZqsWtK5toABsc";
+const peerId = 'QmVD8LC6vjAHaDgsLySc86BVbnb256LuRZqsWtK5toABsc';
 
 const env = {
-  entry: "./src/index.eth.orbitdb.js",
-  officialRemote: "eth",
+  entry: './src/index.eth.http.js',
+  officialRemote: 'eth',
+  http: {
+    host: 'http://api.intercreativity.io/uprtcl/1',
+  },
   pinner: {
-    url: "https://apps.intercreativity.io:3000",
+    url: 'https://apps.intercreativity.io:3000',
     Swarm: [],
     Bootstrap: [`${peerPath}/${peerId}`],
     peerMultiaddr: `${peerPath}/${peerId}`,
   },
   ethers: {
     apiKeys: {
-      etherscan: "6H4I43M46DJ4IJ9KKR8SFF1MF2TMUQTS2F",
-      infura: "73e0929fc849451dae4662585aea9a7b",
+      etherscan: '6H4I43M46DJ4IJ9KKR8SFF1MF2TMUQTS2F',
+      infura: '73e0929fc849451dae4662585aea9a7b',
     },
-    provider: "https://xdai.poanetwork.dev",
+    provider: 'https://xdai.poanetwork.dev',
   },
 };
 

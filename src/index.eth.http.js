@@ -13,6 +13,10 @@ import { CortexModule } from '@uprtcl/cortex';
 import { EveesModule } from '@uprtcl/evees';
 import { IpfsStore } from '@uprtcl/ipfs-provider';
 
+import { HttpEthAuthProvider, HttpStore } from '@uprtcl/http-provider';
+
+import { EveesHttp, EveesHttpModule } from '@uprtcl/evees-http';
+
 import {
   EveesBlockchainCached,
   EveesBlockchainModule,
@@ -24,17 +28,9 @@ import {
   EveesEthereumModule,
 } from '@uprtcl/evees-ethereum';
 
-import { EthereumConnection } from '@uprtcl/ethereum-provider';
-
-import { ApolloClientModule } from '@uprtcl/graphql';
-import { DiscoveryModule } from '@uprtcl/multiplatform';
-
-import { OrbitDBCustom, AddressMapping } from '@uprtcl/orbitdb-provider';
 import {
-  EveesOrbitDB,
   EveesOrbitDBModule,
   ProposalsOrbitDB,
-  PerspectiveStore,
   ContextStore,
   ProposalStore,
   ProposalsToPerspectiveStore,
@@ -42,12 +38,19 @@ import {
   getProposalsAcl,
 } from '@uprtcl/evees-orbitdb';
 
+import { EthereumConnection } from '@uprtcl/ethereum-provider';
+
+import { ApolloClientModule } from '@uprtcl/graphql';
+import { DiscoveryModule } from '@uprtcl/multiplatform';
+
+import { OrbitDBCustom, AddressMapping } from '@uprtcl/orbitdb-provider';
+
 import { EveesReader } from '@uprtcl/evees-reader';
 
 import { SimpleWiki } from './simple-wiki';
 
 (async function () {
-  const ipfsCidConfig = {
+  const cidConfig = {
     version: 1,
     type: 'sha2-256',
     codec: 'raw',
@@ -75,7 +78,7 @@ import { SimpleWiki } from './simple-wiki';
   await ipfs.swarm.connect(env.pinner.peerMultiaddr);
   console.log(`connected to ${env.pinner.peerMultiaddr}`);
 
-  const ipfsStore = new IpfsStore(ipfsCidConfig, ipfs, env.pinner.url);
+  const ipfsStore = new IpfsStore(cidConfig, ipfs, env.pinner.url);
   await ipfsStore.ready();
 
   const ethConnection = new EthereumConnection({
@@ -88,7 +91,6 @@ import { SimpleWiki } from './simple-wiki';
   const contextAcl = getContextAcl(identitySources);
   const proposalsAcl = getProposalsAcl(identitySources);
   const customStores = [
-    PerspectiveStore,
     ContextStore,
     ProposalStore,
     ProposalsToPerspectiveStore,
@@ -105,9 +107,6 @@ import { SimpleWiki } from './simple-wiki';
   );
   await orbitDBCustom.ready();
 
-  const orbitdbEvees = new EveesOrbitDB(orbitDBCustom, ipfsStore);
-  await orbitdbEvees.connect();
-
   const proposals = new ProposalsOrbitDB(orbitDBCustom, ipfsStore);
   const ethEveesConnection = new EveesEthereumConnection(ethConnection);
   await ethEveesConnection.ready();
@@ -120,28 +119,28 @@ import { SimpleWiki } from './simple-wiki';
   );
   await ethEvees.ready();
 
-  const evees = new EveesModule([orbitdbEvees, ethEvees]);
+  const httpProvider = new HttpEthAuthProvider(
+    { host: env.http.host, apiId: 'evees-v1' },
+    ethConnection
+  );
+  const httpStore = new HttpStore(httpProvider, cidConfig);
+  const httpEvees = new EveesHttp(httpProvider, httpStore);
+
+  const evees = new EveesModule([httpEvees, ethEvees]);
 
   const documents = new DocumentsModule();
   const wikis = new WikisModule();
-
-  const reader = new EveesReader([orbitdbEvees, ethEvees], ipfsStore);
-
-  const uref = '';
-  if (uref) {
-    const read = await reader.resolve(uref);
-    console.log(`Read ${uref}`, read);
-  }
 
   const modules = [
     new i18nextBaseModule(),
     new ApolloClientModule(),
     new CortexModule(),
-    new DiscoveryModule([orbitdbEvees.casID]),
+    new DiscoveryModule([httpStore.casID]),
     new LensesModule(),
     new EveesBlockchainModule(),
     new EveesOrbitDBModule(),
     new EveesEthereumModule(),
+    new EveesHttpModule(),
     evees,
     documents,
     wikis,

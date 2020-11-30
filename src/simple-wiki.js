@@ -3,9 +3,7 @@ import { LitElement, html, css } from "lit-element";
 import { moduleConnect } from "@uprtcl/micro-orchestrator";
 import {
   EveesModule,
-  EveesHelpers,
-  deriveSecured,
-  hashObject,
+  EveesHelpers
 } from "@uprtcl/evees";
 import { ApolloClientModule } from "@uprtcl/graphql";
 
@@ -16,6 +14,7 @@ export class SimpleWiki extends moduleConnect(LitElement) {
     return {
       rootHash: { type: String },
       loading: { attribute: false },
+      debug: { attribute: false },
       canCreate: { attribute: false },
       creatingSpace: { attribute: false },
     };
@@ -83,6 +82,10 @@ export class SimpleWiki extends moduleConnect(LitElement) {
       if (!remoteHome) throw new Error("home remote perspective not defined");
       await this.officalRemote.store.create(remoteHome.object);
       window.history.pushState("", "", `/?id=${remoteHome.id}`);
+    }
+
+    if (window.location.href.includes("debug=true")) {
+      this.debug = true;
     }
 
     this.loading = false;
@@ -154,6 +157,10 @@ export class SimpleWiki extends moduleConnect(LitElement) {
     `;
   }
 
+  renderDebug() {
+    return html`<evees-orbitdb-debugger></evees-orbitdb-debugger>`;
+  }
+
   renderWiki() {
     const eveesInfoConfig = {
       showDraftControl: true,
@@ -179,7 +186,7 @@ export class SimpleWiki extends moduleConnect(LitElement) {
             <div class="app-header">HEADER</div>
             <div class="app-content">
               <div class="app-bar">BAR</div>
-              ${this.rootHash === undefined
+              ${this.debug ? this.renderDebug() : this.rootHash === undefined
                 ? this.renderCreate()
                 : this.renderWiki()}
             </div>
