@@ -36,6 +36,7 @@ import {
   ProposalsToPerspectiveStore,
   getContextAcl,
   getProposalsAcl,
+  PerspectiveStore,
 } from '@uprtcl/evees-orbitdb';
 
 import { EthereumConnection } from '@uprtcl/ethereum-provider';
@@ -44,8 +45,6 @@ import { ApolloClientModule } from '@uprtcl/graphql';
 import { DiscoveryModule } from '@uprtcl/multiplatform';
 
 import { OrbitDBCustom, AddressMapping } from '@uprtcl/orbitdb-provider';
-
-import { EveesReader } from '@uprtcl/evees-reader';
 
 import { SimpleWiki } from './simple-wiki';
 
@@ -91,6 +90,7 @@ import { SimpleWiki } from './simple-wiki';
   const contextAcl = getContextAcl(identitySources);
   const proposalsAcl = getProposalsAcl(identitySources);
   const customStores = [
+    PerspectiveStore,
     ContextStore,
     ProposalStore,
     ProposalsToPerspectiveStore,

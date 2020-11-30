@@ -1,13 +1,10 @@
-import { LitElement, html, css } from "lit-element";
+import { LitElement, html, css } from 'lit-element';
 
-import { moduleConnect } from "@uprtcl/micro-orchestrator";
-import {
-  EveesModule,
-  EveesHelpers
-} from "@uprtcl/evees";
-import { ApolloClientModule } from "@uprtcl/graphql";
+import { moduleConnect } from '@uprtcl/micro-orchestrator';
+import { EveesModule, EveesHelpers } from '@uprtcl/evees';
+import { ApolloClientModule } from '@uprtcl/graphql';
 
-import { env } from "../env";
+import { env } from '../env';
 
 export class SimpleWiki extends moduleConnect(LitElement) {
   static get properties() {
@@ -29,7 +26,7 @@ export class SimpleWiki extends moduleConnect(LitElement) {
   subscribeToHistory(history, callback) {
     const pushState = history.pushState;
     history.pushState = function (state) {
-      if (typeof history.onpushstate == "function") {
+      if (typeof history.onpushstate == 'function') {
         history.onpushstate({ state: state });
       }
       callback(arguments);
@@ -41,8 +38,8 @@ export class SimpleWiki extends moduleConnect(LitElement) {
   connectedCallback() {
     super.connectedCallback();
 
-    this.addEventListener("evees-proposal", (e) => {
-      console.log("CATCHED EVENT: evees-proposal ", { e });
+    this.addEventListener('evees-proposal', (e) => {
+      console.log('CATCHED EVENT: evees-proposal ', { e });
       e.stopPropagation();
     });
   }
@@ -50,12 +47,12 @@ export class SimpleWiki extends moduleConnect(LitElement) {
   async firstUpdated() {
     this.loading = true;
 
-    window.addEventListener("popstate", () => {
-      this.rootHash = window.location.href.split("id=")[1];
+    window.addEventListener('popstate', () => {
+      this.rootHash = window.location.href.split('id=')[1];
     });
 
     this.subscribeToHistory(window.history, (state) => {
-      this.rootHash = state[2].split("id=")[1];
+      this.rootHash = state[2].split('id=')[1];
     });
 
     this.officalRemote = this.requestAll(
@@ -71,20 +68,20 @@ export class SimpleWiki extends moduleConnect(LitElement) {
 
     this.canCreate = await this.officalRemote.isLogged();
 
-    if (window.location.href.includes("?id=")) {
-      this.rootHash = window.location.href.split("id=")[1];
+    if (window.location.href.includes('?id=')) {
+      this.rootHash = window.location.href.split('id=')[1];
     }
 
-    if (window.location.href.includes("remoteHome=")) {
+    if (window.location.href.includes('remoteHome=')) {
       const remoteHome = this.officalRemote.getHome
         ? await this.officalRemote.getHome()
         : undefined;
-      if (!remoteHome) throw new Error("home remote perspective not defined");
+      if (!remoteHome) throw new Error('home remote perspective not defined');
       await this.officalRemote.store.create(remoteHome.object);
-      window.history.pushState("", "", `/?id=${remoteHome.id}`);
+      window.history.pushState('', '', `/?id=${remoteHome.id}`);
     }
 
-    if (window.location.href.includes("debug=true")) {
+    if (window.location.href.includes('debug=true')) {
       this.debug = true;
     }
 
@@ -133,7 +130,7 @@ export class SimpleWiki extends moduleConnect(LitElement) {
       }
     );
     this.creatingSpace = false;
-    window.history.pushState("", "", `/?id=${perspectiveId}`);
+    window.history.pushState('', '', `/?id=${perspectiveId}`);
   }
 
   renderCreate() {
@@ -158,7 +155,9 @@ export class SimpleWiki extends moduleConnect(LitElement) {
   }
 
   renderDebug() {
-    return html`<evees-orbitdb-debugger></evees-orbitdb-debugger>`;
+    return html`<evees-orbitdb-debugger
+      show-contexts
+    ></evees-orbitdb-debugger>`;
   }
 
   renderWiki() {
@@ -167,6 +166,7 @@ export class SimpleWiki extends moduleConnect(LitElement) {
       showInfo: true,
       showIcon: true,
       checkOwner: true,
+      showAcl: true,
     };
 
     return html`
@@ -186,7 +186,9 @@ export class SimpleWiki extends moduleConnect(LitElement) {
             <div class="app-header">HEADER</div>
             <div class="app-content">
               <div class="app-bar">BAR</div>
-              ${this.debug ? this.renderDebug() : this.rootHash === undefined
+              ${this.debug
+                ? this.renderDebug()
+                : this.rootHash === undefined
                 ? this.renderCreate()
                 : this.renderWiki()}
             </div>
