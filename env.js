@@ -1,5 +1,5 @@
 const peerPath = `/dns4/localhost/tcp/4003/ws/p2p`;
-const peerId = 'QmbcMzhHfDjHoUaHETq2PkipAE6QvP2wos13AubnVGCM8R';
+const peerId = 'QmVD8LC6vjAHaDgsLySc86BVbnb256LuRZqsWtK5toABsc';
 const env = {
   entry: './src/index.eth.http.js',
   officialRemote: 'eth',
