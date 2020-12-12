@@ -1,5 +1,5 @@
 const peerPath = `/dns4/localhost/tcp/4003/ws/p2p`;
-const peerId = 'QmVD8LC6vjAHaDgsLySc86BVbnb256LuRZqsWtK5toABsc';
+const peerId = 'QmSciPBLrYhWTHitAd8e7EQpcb5mSQVBCvL21r2D1E1YkK';
 const env = {
   entry: './src/index.eth.orbitdb.js',
   officialRemote: 'eth',
