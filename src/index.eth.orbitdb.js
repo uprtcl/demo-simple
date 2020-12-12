@@ -11,7 +11,7 @@ import { WikisModule } from '@uprtcl/wikis';
 
 import { CortexModule } from '@uprtcl/cortex';
 import { EveesModule } from '@uprtcl/evees';
-import { IpfsStore } from '@uprtcl/ipfs-provider';
+import { IpfsStore, PinnerCached } from '@uprtcl/ipfs-provider';
 
 import {
   EveesBlockchainCached,
@@ -75,7 +75,8 @@ import { SimpleWiki } from './simple-wiki';
   await ipfs.swarm.connect(env.pinner.peerMultiaddr);
   console.log(`connected to ${env.pinner.peerMultiaddr}`);
 
-  const ipfsStore = new IpfsStore(ipfsCidConfig, ipfs, env.pinner.url);
+  const pinner = new PinnerCached(env.pinner.url, 3000);
+  const ipfsStore = new IpfsStore(ipfsCidConfig, ipfs, pinner);
   await ipfsStore.ready();
 
   const ethConnection = new EthereumConnection({
@@ -99,7 +100,7 @@ import { SimpleWiki } from './simple-wiki';
     customStores,
     [contextAcl, proposalsAcl],
     identity,
-    env.pinner.url,
+    pinner,
     env.pinner.peerMultiaddr,
     ipfs
   );
