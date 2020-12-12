@@ -1,7 +1,7 @@
 const peerPath = `/dns4/localhost/tcp/4003/ws/p2p`;
 const peerId = 'QmVD8LC6vjAHaDgsLySc86BVbnb256LuRZqsWtK5toABsc';
 const env = {
-  entry: './src/index.eth.http.js',
+  entry: './src/index.eth.orbitdb.js',
   officialRemote: 'eth',
   http: {
     host: 'http://localhost:3100/uprtcl/1',
@@ -26,7 +26,7 @@ const env = {
 // const peerId = 'QmVD8LC6vjAHaDgsLySc86BVbnb256LuRZqsWtK5toABsc';
 
 // const env = {
-//   entry: './src/index.eth.http.js',
+//   entry: './src/index.eth.orbitdb.js',
 //   officialRemote: 'eth',
 //   http: {
 //     host: 'http://localhost:3100/uprtcl/1',
