@@ -1,7 +1,7 @@
 const peerPath = `/dns4/localhost/tcp/4003/ws/p2p`;
-const peerId = 'QmSciPBLrYhWTHitAd8e7EQpcb5mSQVBCvL21r2D1E1YkK';
+const peerId = 'QmcWvt62jXjz3EiF42WfRxkREz2JHSe71hrKjvPzgPN3ux';
 const env = {
-  entry: './src/index.eth.orbitdb.js',
+  entry: './src/index.eth.http.js',
   officialRemote: 'eth',
   http: {
     host: 'http://localhost:3100/uprtcl/1',
@@ -17,8 +17,8 @@ const env = {
       etherscan: '6H4I43M46DJ4IJ9KKR8SFF1MF2TMUQTS2F',
       infura: '73e0929fc849451dae4662585aea9a7b',
     },
-    // provider: "",
-    provider: 'https://xdai.poanetwork.dev',
+    provider: '',
+    // provider: 'https://xdai.poanetwork.dev',
   },
 };
 

@@ -11,9 +11,9 @@ import { WikisModule } from '@uprtcl/wikis';
 
 import { CortexModule } from '@uprtcl/cortex';
 import { EveesModule } from '@uprtcl/evees';
-import { IpfsStore } from '@uprtcl/ipfs-provider';
+import { IpfsStore, PinnerCached } from '@uprtcl/ipfs-provider';
 
-import { HttpEthAuthProvider, HttpStore } from '@uprtcl/http-provider';
+import { HttpEthAuthProvider, HttpStoreCached } from '@uprtcl/http-provider';
 
 import { EveesHttp, EveesHttpModule } from '@uprtcl/evees-http';
 
@@ -77,7 +77,9 @@ import { SimpleWiki } from './simple-wiki';
   await ipfs.swarm.connect(env.pinner.peerMultiaddr);
   console.log(`connected to ${env.pinner.peerMultiaddr}`);
 
-  const ipfsStore = new IpfsStore(cidConfig, ipfs, env.pinner.url);
+  const pinner = new PinnerCached(env.pinner.url, 3000);
+
+  const ipfsStore = new IpfsStore(cidConfig, ipfs, pinner);
   await ipfsStore.ready();
 
   const ethConnection = new EthereumConnection({
@@ -101,7 +103,7 @@ import { SimpleWiki } from './simple-wiki';
     customStores,
     [contextAcl, proposalsAcl],
     identity,
-    env.pinner.url,
+    pinner,
     env.pinner.peerMultiaddr,
     ipfs
   );
@@ -123,7 +125,7 @@ import { SimpleWiki } from './simple-wiki';
     { host: env.http.host, apiId: 'evees-v1' },
     ethConnection
   );
-  const httpStore = new HttpStore(httpProvider, cidConfig);
+  const httpStore = new HttpStoreCached(httpProvider, cidConfig);
   const httpEvees = new EveesHttp(httpProvider, httpStore);
 
   const evees = new EveesModule([httpEvees, ethEvees]);
