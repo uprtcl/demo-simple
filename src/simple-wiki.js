@@ -167,6 +167,7 @@ export class SimpleWiki extends moduleConnect(LitElement) {
       showIcon: true,
       checkOwner: true,
       showAcl: true,
+      showDebugInfo: true,
     };
 
     return html`
