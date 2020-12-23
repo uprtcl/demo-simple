@@ -79,9 +79,6 @@ import { SimpleWiki } from './simple-wiki';
 
   const pinner = new PinnerCached(env.pinner.url, 3000);
 
-  const ipfsStore = new IpfsStore(cidConfig, ipfs, pinner);
-  await ipfsStore.ready();
-
   const ethConnection = new EthereumConnection({
     provider: env.ethers.provider,
   });
@@ -109,23 +106,27 @@ import { SimpleWiki } from './simple-wiki';
   );
   await orbitDBCustom.ready();
 
-  const proposals = new ProposalsOrbitDB(orbitDBCustom, ipfsStore);
   const ethEveesConnection = new EveesEthereumConnection(ethConnection);
   await ethEveesConnection.ready();
-
-  const ethEvees = new EveesBlockchainCached(
-    ethEveesConnection,
-    orbitDBCustom,
-    ipfsStore,
-    proposals
-  );
-  await ethEvees.ready();
 
   const httpProvider = new HttpEthAuthProvider(
     { host: env.http.host, apiId: 'evees-v1' },
     ethConnection
   );
+
   const httpStore = new HttpStoreCached(httpProvider, cidConfig);
+
+  const ipfsStore = new IpfsStore(cidConfig, ipfs, pinner);
+  const proposals = new ProposalsOrbitDB(orbitDBCustom, ipfsStore);
+
+  const ethEvees = new EveesBlockchainCached(
+    ethEveesConnection,
+    orbitDBCustom,
+    httpStore,
+    proposals
+  );
+  await ethEvees.ready();
+
   const httpEvees = new EveesHttp(httpProvider, httpStore);
 
   const evees = new EveesModule([httpEvees, ethEvees]);

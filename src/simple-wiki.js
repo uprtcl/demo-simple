@@ -129,6 +129,8 @@ export class SimpleWiki extends moduleConnect(LitElement) {
         context: `my-wiki-${randint}`,
       }
     );
+
+    this.officalRemote.store.flush();
     this.creatingSpace = false;
     window.history.pushState('', '', `/?id=${perspectiveId}`);
   }
@@ -168,6 +170,7 @@ export class SimpleWiki extends moduleConnect(LitElement) {
       checkOwner: true,
       showAcl: true,
       showDebugInfo: true,
+      showProposals: true,
     };
 
     return html`
